@@ -229,13 +229,15 @@
 						<div class="info-content-section">
 							<div class="row-info info-email">
 								<div class="info-title">이메일<span class="aster" v-if="1 !== 1">*</span></div>
-								<div class="app-input-wrapper">
-									<q-input class="app-input" outlined v-model="employeeData.email" readonly autocomplete="off" />
-									<div class="hint-text-wrapper">
-										<div class="hint-text"></div>
-									</div>
+
+								<div class="email-wrapper">
+									<!-- <div class="app-input-wrapper"> -->
+									<div class="email-info" v-for="(email, i) in employeeData.email" :key="i">{{ email }}</div>
+									<!-- <div class="hint-text-wrapper">
+											<div class="hint-text"></div>
+										</div> -->
+									<!-- </div> -->
 								</div>
-								<div class="append-address">@twolinecode.com</div>
 							</div>
 						</div>
 					</div>
@@ -263,7 +265,7 @@ const employeeData = ref({
 	affiliation: '',
 	birthday: '',
 	department: '',
-	email: '',
+	email: [''],
 	employeeId: 0,
 	employeeNo: 0,
 	gen: 0,
@@ -329,7 +331,7 @@ const sampleData = ref({
 const onMypage = async () => {
 	const info = await getInfo();
 	employeeData.value = info;
-	console.log(info);
+	employeeData.value.email = info.email.split(',');
 };
 
 const getInfo = async () => {
@@ -401,6 +403,21 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.email-wrapper {
+	width: 100%;
+	margin-top: 8px;
+	display: flex;
+	flex-direction: column;
+	justify-content: left;
+	align-items: left;
+}
+
+.email-info {
+	margin-bottom: 10px;
+	color: #65728a;
+	font-size: 1rem;
+}
+
 .btn-cancle {
 	background: gray;
 }

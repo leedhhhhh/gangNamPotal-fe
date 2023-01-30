@@ -1,5 +1,5 @@
 <template>
-	<template v-if="propDataSet.isAttendance">
+	<template v-if="propDataSet?.isAttendance">
 		<div class="table-header" :loading="loading">
 			<q-space></q-space>
 			<q-btn class="app-btn" color="grey" outline @click="excelDown"> Excel로 추출 </q-btn>
@@ -185,8 +185,8 @@
 		<q-table
 			flat
 			bordered
-			:rows="propDataSet.list"
-			:columns="propDataSet.columnList"
+			:rows="propDataSet?.list"
+			:columns="propDataSet?.columnList"
 			v-model:pagination="pagination"
 			hide-pagination
 			row-key="rowNum"
@@ -201,6 +201,9 @@
 								{{ col.label }}
 							</div>
 						</template>
+						<template v-else>
+							{{ col.label }}
+						</template>
 					</q-th>
 				</q-tr>
 			</template>
@@ -208,13 +211,29 @@
 			<template v-slot:body="props">
 				<q-tr :props="props">
 					<q-td v-for="col in props.cols" :key="col.name" :props="props">
-						{{ col.value }}
+						<template v-if="col.label == '이메일'">
+							<template v-if="col.value.length > 1">
+								<p class="email-info-wrapper" @click="">{{ col.value[0] }} ...</p>
+								<!-- 이메일 div 표시 -->
+								<p class="email-hidden-info-wrapper">
+									<template v-for="email in col.value" :key="email">
+										<p class="email-hidden-info">{{ email }}</p>
+									</template>
+								</p>
+							</template>
+							<template v-else>
+								{{ col.value[0] }}
+							</template>
+						</template>
+						<template v-else>
+							{{ col.value }}
+						</template>
 					</q-td>
 				</q-tr>
 			</template>
 		</q-table>
 		<div class="app-pagination-wrapper flex items-center justify-between">
-			<div class="page-info">Total {{ propDataSet.total }}</div>
+			<div class="page-info">Total {{ propDataSet?.total }}</div>
 			<div class="page-number flex items-center">
 				<q-btn
 					class="app-btn btn-basic btn-ghost-black btn-only-icon btn-small"
@@ -513,10 +532,41 @@ const excelDown = async () => {
 		uiStore.hideLoading();
 	}
 };
+
+const splitEmail = (email: any) => {
+	const emails = email.split(',');
+
+	if (emails.length === 1) {
+		return email;
+	} else {
+		return emails[0] + ' ...';
+	}
+};
 </script>
 
 <style scoped lang="scss">
-.hover:hover {
+.email-info-wrapper {
+	cursor: pointer;
+	margin: 0px;
+	padding: 0px;
+}
+
+.email-hidden-info-wrapper {
+	padding: 15px 20px;
+	background-color: hsl(0, 0%, 24%);
+	border-radius: 5px;
+	color: #ffffff;
+	display: none;
+	// visibility: none;
+}
+.email-info-wrapper:hover + .email-hidden-info-wrapper {
+	display: block;
+	position: absolute;
+}
+
+.email-hidden-info {
+	margin: 0px;
+	padding: 2px 0px;
 }
 
 .table-header {

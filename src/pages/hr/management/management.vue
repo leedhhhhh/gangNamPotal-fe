@@ -28,7 +28,17 @@ const manageMentVO = ref({
 const uiStore = useUiStore();
 
 const tableDataSet = ref({
-	list: [], // 테이블에 들어갈 데이터 --> 더미 데이터는 여기에
+	list: [
+		{
+			employeeId: '',
+			nameKr: '',
+			rank: '',
+			affiliation: '',
+			department: '',
+			email: [''],
+			phone: '',
+		},
+	], // 테이블에 들어갈 데이터 --> 더미 데이터는 여기에
 	total: 0,
 	isAttendance: false,
 	isLoading: true,
@@ -67,6 +77,14 @@ const filterDataSet = ref({
 			name: 'affiliation',
 			label: '소속',
 		},
+		{
+			name: 'email',
+			label: '이메일',
+		},
+		{
+			name: 'phone',
+			label: '전화번호',
+		},
 	],
 });
 
@@ -96,6 +114,8 @@ const onRequest = async () => {
 
 	tableDataSet.value.list = list.hrInfoDataLists;
 	tableDataSet.value.total = list.totalCount;
+
+	// tableDataSet.value.list.email = list.email.split(',');
 };
 
 const getManageMentList = async (manageMentVO: any) => {
